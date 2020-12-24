@@ -1,5 +1,5 @@
 ---
-- name: Deploy image to openstack and create instance
+- name: Deploying image to openstack and creating an instance
   hosts: localhost
   vars:
     admin_password: !vault |
