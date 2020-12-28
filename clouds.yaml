@@ -1,0 +1,10 @@
+kclouds:
+  igi:
+    auth:
+      auth_url: http://127.0.0.1/identity
+      username: admin
+      password: 123456
+      project_name: admin
+      user_domain_name: Default
+      project_domain_name: Default
+    dns_api_version: 1

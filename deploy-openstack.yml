@@ -1,14 +1,8 @@
----
+k---
 - name: Deploying image to openstack and creating an instance
   hosts: localhost
-  vars:
-    admin_password: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          30323961373332656639663834643533346631396634663634383532666331653065356638373761
-          6130636365643263323936643539613432306538306131610a316463326138333534363262303430
-          34393935363934313933366139303836356236353530303939303364323136643763356361323434
-          3330303464306530620a666166303536363737656332333436346263613964646261383062633363
-          6231
+  environment:
+    OS_CLIENT_CONFIG_FILE: "./clouds.yaml"
   tasks:
   - name: Downloading ubuntu cloud image 
     get_url:
@@ -17,14 +11,8 @@
 
   - name: Uploading image to openstack
     os_image:
-      auth:
-         auth_url: http://10.1.29.40/identity
-         username: admin
-         password: "{{ admin_password }}"
-         project_name: admin
-         os_user_domain_name: Default
-         os_project_domain_name: Default
       name: bionic
+      cloud: "igi"
       container_format: bare
       disk_format: qcow2
       state: present
@@ -32,26 +20,12 @@
 
   - name: Creating SSH keypair
     os_keypair:
-      auth:
-         auth_url: http://10.1.29.40/identity
-         username: admin
-         password: "{{ admin_password }}"
-         project_name: admin
-         os_user_domain_name: Default
-         os_project_domain_name: Default
       state: present
       name: ubuntu
       public_key_file: "{{ '~' | expanduser }}/.ssh/id_rsa.pub"
 
   - name: Creating the instance
     os_server:
-      auth:
-         auth_url: http://10.1.29.40/identity
-         username: admin
-         password: "{{ admin_password }}"
-         project_name: admin
-         os_user_domain_name: Default
-         os_project_domain_name: Default
       state: present
       name: bionic
       image: bionic
@@ -59,7 +33,9 @@
       security_groups: default
       key_name: ubuntu
       nics:
-        - net-id: 4c3f1cc5-c466-4e84-86b4-cafbd8367e9a
+        - net-id: b4e1307a-c559-42dd-9416-f3bef3e87c59
+      floating_ips:
+        - 172.24.4.25
     register: bionic
 
   - name: Adding instance to inventory
