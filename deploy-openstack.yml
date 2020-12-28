@@ -1,4 +1,4 @@
-k---
+---
 - name: Deploying image to openstack and creating an instance
   hosts: localhost
   environment:
